@@ -6,44 +6,84 @@ import { BorderBeam } from "@/components/ui/border-beam";
 import { Particles } from "@/components/ui/particles";
 import { BlurFade } from "@/components/ui/blur-fade";
 
-// Feature Card Component
+// Feature Card Component - Large Version with Image
 const FeatureCard = ({ 
   icon: Icon, 
   title, 
   description, 
-  colorClass, 
-  index 
+  colorClass,
+  gradientClass,
+  index,
+  isReversed = false
 }: { 
   icon: any; 
   title: string; 
   description: string; 
-  colorClass: string; 
+  colorClass: string;
+  gradientClass: string;
   index: number;
+  isReversed?: boolean;
 }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ 
-        scale: 1.05,
-        transition: { duration: 0.2 }
-      }}
-      className={`bg-white border-2 ${colorClass} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all`}
+      initial={{ opacity: 0, y: 60 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 lg:gap-12 items-center`}
     >
+      {/* Image Container - Placeholder for isometric image */}
       <motion.div 
-        className={`w-14 h-14 ${colorClass.replace('border-', 'bg-').replace('200', '100')} rounded-xl flex items-center justify-center mb-4`}
-        whileHover={{ rotate: 360 }}
-        transition={{ duration: 0.6 }}
+        className="w-full lg:w-1/2"
+        initial={{ opacity: 0, x: isReversed ? 50 : -50 }}
+        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isReversed ? 50 : -50 }}
+        transition={{ duration: 0.7, delay: index * 0.15 + 0.2 }}
+        whileHover={{ scale: 1.05, rotate: isReversed ? -2 : 2 }}
       >
-        <Icon className={`${colorClass.replace('border-', 'text-').replace('200', '600')} w-8 h-8`} />
+        <div className={`relative aspect-square rounded-3xl ${gradientClass} p-8 shadow-2xl border-4 ${colorClass} overflow-hidden`}>
+          {/* Placeholder for isometric image */}
+          <div className="w-full h-full flex items-center justify-center">
+            <motion.div
+              animate={{ 
+                y: [0, -20, 0],
+              }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className={`w-32 h-32 rounded-3xl ${colorClass.replace('border-', 'bg-').replace('200', '400')} flex items-center justify-center`}
+            >
+              <Icon className={`${colorClass.replace('border-', 'text-').replace('200', '700')} w-20 h-20`} />
+            </motion.div>
+          </div>
+          
+          {/* Decorative elements */}
+          <div className={`absolute top-0 right-0 w-40 h-40 ${colorClass.replace('border-', 'bg-').replace('200', '100')} rounded-full blur-3xl opacity-50`} />
+          <div className={`absolute bottom-0 left-0 w-32 h-32 ${colorClass.replace('border-', 'bg-').replace('200', '200')} rounded-full blur-2xl opacity-50`} />
+        </div>
       </motion.div>
-      <h3 className="text-xl font-bold text-gray-800 mb-3">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+
+      {/* Content */}
+      <motion.div 
+        className="w-full lg:w-1/2 text-center lg:text-left"
+        initial={{ opacity: 0, x: isReversed ? -50 : 50 }}
+        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isReversed ? -50 : 50 }}
+        transition={{ duration: 0.7, delay: index * 0.15 + 0.3 }}
+      >
+        <motion.div 
+          className={`inline-block p-4 ${colorClass.replace('border-', 'bg-').replace('200', '100')} rounded-2xl mb-6`}
+          whileHover={{ rotate: 360 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Icon className={`${colorClass.replace('border-', 'text-').replace('200', '600')} w-12 h-12`} />
+        </motion.div>
+        <h3 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">{title}</h3>
+        <p className="text-lg text-gray-600 leading-relaxed">{description}</p>
+      </motion.div>
     </motion.div>
   );
 };
@@ -274,48 +314,68 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-white/50">
-        <div className="max-w-7xl mx-auto">
+      {/* Features Section - Large with Images */}
+      <section className="py-32 px-4 bg-gradient-to-b from-white via-pink-50/30 to-white relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-primary rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
           <BlurFade delay={0.1}>
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            <div className="text-center mb-20">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                className="inline-block px-6 py-2 bg-primary/10 rounded-full mb-6"
+              >
+                <span className="text-primary font-semibold">✨ ระบบที่ครบครัน</span>
+              </motion.div>
+              <h2 className="text-5xl lg:text-6xl font-bold text-gray-800 mb-6">
                 ฟีเจอร์หลัก
               </h2>
-              <p className="text-gray-600 text-lg">
-                ระบบที่ครบครัน ใช้งานง่าย ตอบโจทย์ทุกความต้องการ
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                เทคโนโลยีล้ำสมัยที่ออกแบบมาเพื่อการบริหารจัดการโรงเรียนยุคใหม่
               </p>
             </div>
           </BlurFade>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="space-y-32">
             <FeatureCard
               icon={Camera}
               title="ตรวจจับอัตโนมัติ"
-              description="Face Recognition ตรวจจับการมาโรงเรียนแบบเรียลไทม์"
+              description="ระบบ Face Recognition ที่ทันสมัย ตรวจจับการมาโรงเรียนของนักเรียนแบบเรียลไทม์ บันทึกเวลาเข้า-ออกอัตโนมัติ ลดภาระงานเอกสาร และเพิ่มความแม่นยำในการบันทึกข้อมูล"
               colorClass="border-pink-200"
+              gradientClass="bg-gradient-to-br from-pink-50 to-pink-100"
               index={0}
             />
             <FeatureCard
               icon={ClipboardCheck}
-              title="ระบบคะแนน"
-              description="บริหารจัดการคะแนนความประพฤติอัตโนมัติ"
+              title="ระบบคะแนนความประพฤติ"
+              description="จัดการคะแนนความประพฤตินักเรียนแบบดิจิทัล เพิ่มหรือหักคะแนนได้ทันที พร้อมระบบรายงานที่ครบถ้วน ช่วยให้ครูและผู้ปกครองติดตามพัฒนาการของนักเรียนได้อย่างมีประสิทธิภาพ"
               colorClass="border-yellow-200"
+              gradientClass="bg-gradient-to-br from-yellow-50 to-yellow-100"
               index={1}
+              isReversed
             />
             <FeatureCard
               icon={Users}
               title="เช็คแถวดิจิทัล"
-              description="เช็คชื่อและบันทึกการละเมิดระเบียบ"
+              description="เช็คชื่อนักเรียนแบบดิจิทัล บันทึกการละเมิดระเบียบได้ทันที พร้อมถ่ายรูปประกอบ ทำให้การจัดการชั่วโมงเช้าและการตรวจเครื่องแบบเป็นเรื่องง่ายและรวดเร็ว"
               colorClass="border-violet-200"
+              gradientClass="bg-gradient-to-br from-violet-50 to-violet-100"
               index={2}
             />
             <FeatureCard
               icon={Bell}
               title="แจ้งเตือนทันที"
-              description="แจ้งผู้ปกครองผ่าน LINE ทันทีที่มีเหตุการณ์"
+              description="ระบบแจ้งเตือนอัตโนมัติผ่าน LINE ส่งข้อมูลการมาโรงเรียน คะแนนความประพฤติ และเหตุการณ์สำคัญถึงผู้ปกครองทันที สร้างความร่วมมือระหว่างโรงเรียนและบ้านอย่างมีประสิทธิภาพ"
               colorClass="border-pink-200"
+              gradientClass="bg-gradient-to-br from-pink-50 to-pink-100"
               index={3}
+              isReversed
             />
           </div>
         </div>
