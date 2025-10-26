@@ -6,6 +6,13 @@ import { BorderBeam } from "@/components/ui/border-beam";
 import { Particles } from "@/components/ui/particles";
 import { BlurFade } from "@/components/ui/blur-fade";
 
+// Import images
+import schoolHeroBg from "@/assets/school-hero-bg.jpg";
+import executiveImg from "@/assets/executive.png";
+import teacherImg from "@/assets/teacher.png";
+import parentImg from "@/assets/parent.png";
+import studentImg from "@/assets/student.png";
+
 // Feature Card Component - Large Version with Image
 const FeatureCard = ({ 
   icon: Icon, 
@@ -127,14 +134,14 @@ const CapabilityCard = ({
 
 // Role Section Component
 const RoleSection = ({
-  emoji,
+  image,
   title,
   description,
   capabilities,
   gradient,
   isReversed = false,
 }: {
-  emoji: string;
+  image: string;
   title: string;
   description: string;
   capabilities: Array<{ icon: any; title: string; description: string }>;
@@ -142,10 +149,12 @@ const RoleSection = ({
   isReversed?: boolean;
 }) => {
   const ref = useRef(null);
+  const headerRef = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const isHeaderInView = useInView(headerRef, { once: true, amount: 0.3 });
 
   return (
-    <section ref={ref} className={`py-20 px-4 ${gradient} relative overflow-hidden`}>
+    <section ref={headerRef} className={`py-20 px-4 ${gradient} relative overflow-hidden`}>
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
@@ -153,42 +162,49 @@ const RoleSection = ({
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-12 items-center mb-12`}>
-          {/* Role Header */}
-          <BlurFade delay={0.1} className="lg:w-1/3">
+        <div className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-12 lg:gap-16 items-center`}>
+          {/* Image Side - Large and Prominent */}
+          <motion.div 
+            className="w-full lg:w-1/2 flex justify-center"
+            initial={{ opacity: 0, x: isReversed ? 100 : -100 }}
+            animate={isHeaderInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isReversed ? 100 : -100 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             <motion.div
-              initial={{ opacity: 0, x: isReversed ? 50 : -50 }}
-              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isReversed ? 50 : -50 }}
-              transition={{ duration: 0.6 }}
+              className="relative"
+              whileHover={{ scale: 1.05, rotate: isReversed ? -2 : 2 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className={`absolute inset-0 ${gradient} blur-3xl opacity-40 rounded-full`}></div>
+              <img 
+                src={image} 
+                alt={title}
+                className="relative w-full max-w-md lg:max-w-lg drop-shadow-2xl"
+              />
+            </motion.div>
+          </motion.div>
+
+          {/* Text and Capabilities Side */}
+          <div className="w-full lg:w-1/2 space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               className="text-center lg:text-left"
             >
-              <motion.div 
-                className="text-8xl mb-6 inline-block"
-                animate={{ 
-                  rotate: [0, 10, -10, 0],
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                {emoji}
-              </motion.div>
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">{title}</h2>
-              <p className="text-lg text-gray-700">{description}</p>
+              <h2 className="text-4xl lg:text-5xl font-bold text-gray-800 mb-4">{title}</h2>
+              <p className="text-lg text-gray-700 mb-6">{description}</p>
             </motion.div>
-          </BlurFade>
 
-          {/* Capabilities Grid */}
-          <div className="lg:w-2/3">
+            {/* Capabilities Grid */}
             <motion.div
-              initial={{ opacity: 0, x: isReversed ? -50 : 50 }}
-              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isReversed ? -50 : 50 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              ref={ref}
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
               className="overflow-x-auto pb-4 -mx-4 px-4 lg:mx-0 lg:px-0"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 min-w-max md:min-w-0">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-max sm:min-w-0">
                 {capabilities.map((cap, i) => (
                   <CapabilityCard key={i} {...cap} index={i} />
                 ))}
@@ -262,6 +278,17 @@ export default function Index() {
 
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center px-4 py-20 overflow-hidden">
+        {/* Hero Background Image */}
+        <div 
+          className="absolute inset-0 -z-20 opacity-20"
+          style={{
+            backgroundImage: `url(${schoolHeroBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(2px)'
+          }}
+        />
+        
         <Particles
           className="absolute inset-0 -z-10"
           quantity={100}
@@ -384,7 +411,7 @@ export default function Index() {
       {/* Roles Sections */}
       <div className="space-y-0">
         <RoleSection
-          emoji="👨‍💼"
+          image={executiveImg}
           title="ผู้บริหาร"
           description="ภาพรวมและการควบคุมระบบทั้งหมด เพื่อการตัดสินใจที่มีประสิทธิภาพ"
           capabilities={executiveCapabilities}
@@ -392,7 +419,7 @@ export default function Index() {
         />
 
         <RoleSection
-          emoji="👨‍🏫"
+          image={teacherImg}
           title="ครู"
           description="เครื่องมือสำหรับครูในการดูแลและบริหารจัดการนักเรียนประจำวัน"
           capabilities={teacherCapabilities}
@@ -401,7 +428,7 @@ export default function Index() {
         />
 
         <RoleSection
-          emoji="👨‍👩‍👧"
+          image={parentImg}
           title="ผู้ปกครอง"
           description="ติดตามดูแลบุตรหลานได้ทุกที่ทุกเวลา รับแจ้งเตือนทันทีเมื่อมีเหตุการณ์"
           capabilities={parentCapabilities}
@@ -409,11 +436,11 @@ export default function Index() {
         />
 
         <RoleSection
-          emoji="🎓"
+          image={studentImg}
           title="นักเรียน"
-          description="เข้าถึงข้อมูลส่วนตัว ติดตามคะแนนและพัฒนาตนเอง"
+          description="ตรวจสอบคะแนนและประวัติของตนเองได้ตลอดเวลา เพื่อพัฒนาตนเองอย่างต่อเนื่อง"
           capabilities={studentCapabilities}
-          gradient="bg-gradient-to-br from-yellow-100 via-yellow-50 to-violet-50"
+          gradient="bg-gradient-to-br from-yellow-100 via-yellow-50 to-pink-50"
           isReversed
         />
       </div>
